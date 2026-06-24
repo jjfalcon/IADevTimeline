@@ -1,0 +1,1 @@
+Crea una web que muestre una linea de tiempo desde la aparicion de ChatGPT a la actualidad, donde aparezcan predicciones realizadas por CEO y figuraas relevantes de la tecnología que hablan sobre como los programadores iban a desaparecer y como se equivocaron ya que solo buscaban favorecer la espectativa por sus empresas.
