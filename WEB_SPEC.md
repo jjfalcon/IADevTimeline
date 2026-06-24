@@ -1,1 +1,7 @@
-Crea una web que muestre una linea de tiempo desde la aparicion de ChatGPT a la actualidad, donde aparezcan predicciones realizadas por CEO y figuraas relevantes de la tecnolog�a que hablan sobre como los programadores iban a desaparecer y como se equivocaron ya que solo buscaban favorecer la espectativa por sus empresas.
+# WEB_SPEC.md
+
+- Timeline web estática (sin frameworks) desde Nov 2022 (ChatGPT) hasta Jun 2026.
+- Predicciones de CEOs tech diciendo que los programadores desaparecerían.
+- Contraste con datos reales del mercado laboral que muestran lo contrario.
+- Tema oscuro, idioma español.
+- **Cada evento debe incluir un enlace a la fuente original (noticia, entrevista, informe).**
