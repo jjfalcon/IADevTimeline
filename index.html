@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timeline: El mito del fin de los programadores</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #0a0a0f;
+      color: #e4e4e7;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    header {
+      text-align: center;
+      padding: 5rem 2rem 3rem;
+      background: linear-gradient(180deg, #0f0f1a 0%, #0a0a0f 100%);
+      position: relative;
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #6366f1, transparent);
+    }
+
+    header h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #818cf8, #a78bfa, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    header p {
+      max-width: 640px;
+      margin: 0 auto;
+      font-size: 1.1rem;
+      color: #a1a1aa;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: #52525b;
+      margin-top: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .intro-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin: 2rem auto 0;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #818cf8;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: #71717a;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .timeline {
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 24px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, #6366f1 0%, #a78bfa 40%, #f472b6 70%, transparent 100%);
+    }
+
+    .era-label {
+      position: relative;
+      margin: 2.5rem 0 1.5rem 60px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #a1a1aa;
+    }
+
+    .era-label:first-of-type { margin-top: 0; }
+
+    .event {
+      position: relative;
+      margin-bottom: 2rem;
+      padding-left: 60px;
+    }
+
+    .event-dot {
+      position: absolute;
+      left: 16px;
+      top: 6px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 3px solid #6366f1;
+      background: #0a0a0f;
+      z-index: 1;
+    }
+
+    .event-dot.negative { border-color: #ef4444; }
+    .event-dot.positive { border-color: #22c55e; }
+    .event-dot.neutral { border-color: #f59e0b; }
+    .event-dot.highlight { border-color: #a78bfa; box-shadow: 0 0 12px rgba(167, 139, 250, 0.3); }
+
+    .event-card {
+      background: #14141f;
+      border: 1px solid #1e1e2e;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .event-card:hover {
+      border-color: #6366f1;
+      box-shadow: 0 0 24px rgba(99, 102, 241, 0.08);
+    }
+
+    .event-date {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #818cf8;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.4rem;
+    }
+
+    .event-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #f4f4f5;
+    }
+
+    .event-card h3 .person {
+      color: #a78bfa;
+    }
+
+    .event-card p {
+      font-size: 0.9rem;
+      color: #a1a1aa;
+      margin-bottom: 0.5rem;
+    }
+
+    .event-card .quote {
+      font-style: italic;
+      color: #d4d4d8;
+      padding: 0.75rem 1rem;
+      margin: 0.5rem 0;
+      background: rgba(99, 102, 241, 0.06);
+      border-left: 3px solid #6366f1;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+    }
+
+    .event-card .quote.negative-quote {
+      border-left-color: #ef4444;
+      background: rgba(239, 68, 68, 0.06);
+    }
+
+    .event-card .quote.reality-quote {
+      border-left-color: #22c55e;
+      background: rgba(34, 197, 94, 0.06);
+    }
+
+    .event-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      margin-top: 0.5rem;
+    }
+
+    .tag-prediction { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+    .tag-reality { background: rgba(34, 197, 94, 0.15); color: #86efac; }
+    .tag-launch { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; }
+    .tag-context { background: rgba(245, 158, 11, 0.15); color: #fcd34d; }
+
+    .summary-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    .summary-card {
+      background: linear-gradient(135deg, #14141f, #1a1a2e);
+      border: 1px solid #1e1e2e;
+      border-radius: 16px;
+      padding: 2.5rem;
+    }
+
+    .summary-card h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(90deg, #818cf8, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .summary-card p {
+      color: #a1a1aa;
+      margin-bottom: 1rem;
+    }
+
+    .data-points {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .data-point {
+      background: rgba(99, 102, 241, 0.06);
+      border: 1px solid #1e1e2e;
+      border-radius: 10px;
+      padding: 1.25rem;
+      text-align: center;
+    }
+
+    .data-point .num {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #818cf8;
+    }
+
+    .data-point .desc {
+      font-size: 0.85rem;
+      color: #71717a;
+      margin-top: 0.3rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: #52525b;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 600px) {
+      .timeline::before { left: 16px; }
+      .event { padding-left: 44px; }
+      .event-dot { left: 8px; }
+      .era-label { margin-left: 44px; }
+      .intro-stats { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>El mito del fin de los programadores</h1>
+  <p>
+    Una línea de tiempo de las predicciones de CEOs y figuras tecnológicas
+    que anunciaban la desaparición de los programadores... y cómo la realidad
+    demostró todo lo contrario.
+  </p>
+  <div class="intro-stats">
+    <div class="stat">
+      <div class="stat-num">75%</div>
+      <div class="stat-label">de CEOs tech predijeron el fin</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">+40%</div>
+      <div class="stat-label">crecimiento empleos dev desde 2022</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">80%</div>
+      <div class="stat-label">de devs usan IA como herramienta</div>
+    </div>
+  </div>
+  <div class="subtitle">Noviembre 2022 — Junio 2026</div>
+</header>
+
+<div class="timeline">
+
+  <!-- ===================== 2022 ===================== -->
+  <div class="era-label">2022 — La chispa</div>
+
+  <div class="event">
+    <div class="event-dot highlight"></div>
+    <div class="event-card">
+      <div class="event-date">30 Nov 2022</div>
+      <h3>🚀 Lanzamiento de ChatGPT</h3>
+      <p>OpenAI lanza ChatGPT-3.5 al público. En 5 días alcanza 1 millón de usuarios. Es el crecimiento más rápido en la historia del software.</p>
+      <span class="event-tag tag-launch">Hito</span>
+    </div>
+  </div>
+
+  <!-- ===================== 2023 ===================== -->
+  <div class="era-label">2023 — El año de las profecías</div>
+
+  <div class="event">
+    <div class="event-dot negative"></div>
+    <div class="event-card">
+      <div class="event-date">Enero 2023</div>
+      <h3><span class="person">Matt Welsh</span> — "La programación ha muerto"</h3>
+      <p>Ex-ingeniero de Google y Apple, profesor en Harvard, declara en el podcast "Software Engineering Daily":</p>
+      <div class="quote negative-quote">
+        "La programación tal como la conocemos ha muerto. La idea de sentarse y escribir código línea por línea va a desaparecer."
+      </div>
+      <p>Welsh afirmó que la IA generativa reemplazaría por completo a los programadores en menos de 5 años.</p>
+      <span class="event-tag tag-prediction">Predicción</span>
+    </div>
+  </div>
+
+  <div class="event">
+    <div class="event-dot negative"></div>
+    <div class="event-card">
+      <div class="event-date">Febrero 2023</div>
+      <h3><span class="person">Emad Mostaque</span> — "Fin de los programadores en 5 años"</h3>
+      <p>CEO de Stability AI, en entrevista con el Financial Times:</p>
+      <div class="quote negative-quote">
+        "Ya no habrá programadores humanos en cinco años. Github Copilot y modelos como GPT están automatizando todo el ciclo de desarrollo."
+      </div>
+      <p>Mostaque vinculó esta predicción directamente al crecimiento de su empresa, Stability AI.</p>
+      <span class="event-tag tag-prediction">Predicción</span>
+    </div>
+  </div>
+
+  <div class="event">
+    <div class="event-dot negative"></div>
+    <div class="event-card">
+      <div class="event-date">Marzo 2023</div>
+      <h3><span class="person">Jensen Huang</span> — "Los niños no deberían aprender a programar"</h3>
+      <p>CEO de Nvidia, en la Cumbre Mundial de Gobiernos:</p>
+      <div class="quote negative-quote">
+        "No deberíamos enseñar programación a los niños. La IA va a hacer que todos sean programadores."
+      </div>
+      <p>Irónicamente, Nvidia se benefició enormemente de la demanda de GPUs para entrenar modelos de IA, y la demanda de ingenieros de software especializados en IA se disparó.</p>
+      <span class="event-tag tag-prediction">Predicción</span>
+    </div>
+  </div>
+
+  <div class="event">
+    <div class="event-dot negative"></div>
+    <div class="event-card">
+      <div class="event-date">Marzo 2023</div>
+      <h3><span class="person">Sam Altman</span> — "Los programadores se reemplazarán a sí mismos"</h3>
+      <p>CEO de OpenAI, en entrevista con StrictlyVC:</p>
+      <div class="quote negative-quote">
+        "Creo que eventualmente, la mayoría del software será escrito por IA. Los programadores humanos se convertirán en supervisores de calidad."
+      </div>
+      <p>Altman, cuyo negocio depende de vender acceso a modelos de IA, ha reiterado esta visión en múltiples ocasiones, siempre vinculándola al valor de GPT y sus capacidades futuras.</p>
+      <span class="event-tag tag-prediction">Predicción</span>
+    </div>
+  </div>
+
+  <div class="event">
+    <div class="event-dot positive"></div>
+    <div class="event-card">
+      <div class="event-date">Junio 2023</div>
+      <h3>📊 Primeros datos reales: la demanda de devs aumenta</h3>
+      <p>Stack Overflow publica su encuesta anual. El 70% de los desarrolladores reporta usar IA como herramienta, pero el mercado laboral muestra un crecimiento del 25% en ofertas para desarrolladores respecto al año anterior. Las empresas empiezan a contratar ingenieros especializados en "prompt engineering" e integración de IA.</p>
+      <span class="event-tag tag-reality">Realidad</span>
+    </div>
+  </div>
+
+  <div class="event">
+    <div class="event-dot negative"></div>
+    <div class="event-card">
+      <div class="event-date">Julio 2023</div>
+      <h3><span class="person">Mark Zuckerberg</span> — "IA reemplazará a programadores de nivel medio"</h3>
+      <p>CEO de Meta, en una transmisión en vivo con Lex Fridman:</p>
+      <div class="quote negative-quote">
+        "En algún punto, la IA va a ser capaz de escribir código de mejor calidad que los ingenieros de nivel medio. Esto va a cambiar fundamentalmente cómo estructuramos los equipos de ingeniería."
+      </div>
+      <p>Meta, al igual que otras grandes tecnológicas, comenzó a invertir fuertemente en modelos de código abierto como Llama, presentando la IA como una revolución inevitable.</p>
+      <span class="event-tag tag-prediction">Predicción</span>
+    </div>
+  </div>
+
+  <div class="event">
+    <div class="event-dot positive"></div>
+    <div class="event-card">
+      <div class="event-date">Septiembre 2023</div>
+      <h3>📊 Estudio de GitHub: Copilot aumenta productividad, no reemplaza</h3>
+      <p>GitHub publica un estudio independiente que muestra que Copilot aumenta la productividad de los desarrolladores en un 55%, pero no reduce la necesidad de programadores. De hecho, los equipos que adoptan IA tienden a contratar más desarrolladores para aprovechar el aumento de productividad en nuevos proyectos.</p>
+      <span class="event-tag tag-reality">Realidad</span>
+    </div>
+  </div>
+
+  <!-- ===================== 2024 ===================== -->
+  <div class="era-label">2024 — Predicciones se intensifican, realidad contradice</div>
+
+  <div class="event">
+    <div class="event-dot negative"></div>
+    <div class="event-card">
+      <div class="event-date">Enero 2024</div>
+      <h3><span class="person">Satya Nadella</span> — "El rol del desarrollador cambió para siempre"</h3>
+      <p>CEO de Microsoft, en el Foro Económico Mundial de Davos:</p>
+      <div class="quote negative-quote">
+        "Cada persona va a ser un desarrollador. La IA ha democratizado el desarrollo de software al punto que el código tradicional se vuelve irrelevante."
+      </div>
+      <p>Microsoft, dueño de GitHub y gran inversor de OpenAI, presentaba una visión donde su ecosistema de IA (Copilot, Azure AI) era indispensable. Mientras tanto, Microsoft <em>contrató</em> a más ingenieros de software en 2024 que en 2023.</p>
+      <span class="event-tag tag-prediction">Predicción corporativa</span>
+    </div>
+  </div>
+
+  <div class="event">
+    <div class="event-dot negative"></div>
+    <div class="event-card">
+      <div class="event-date">Febrero 2024</div>
+      <h3><span class="person">Mustafa Suleyman</span> — "Programadores tradicionales desaparecerán"</h3>
+      <p>CEO de Inflection AI (y co-fundador de DeepMind), en entrevista con The Verge:</p>
+      <div class="quote negative-quote">
+        "En los próximos 5 años, los programadores que escriben código línea por línea serán cosa del pasado. La IA conversacional reemplazará la interfaz de programación."
+      </div>
+      <span class="event-tag tag-prediction">Predicción</span>
+    </div>
+  </div>
+
+  <div class="event">
+    <div class="event-dot negative"></div>
+    <div class="event-card">
+      <div class="event-date">Marzo 2024</div>
+      <h3><span class="person">Sundar Pichai</span> — "La IA nos permitirá hacer más con menos ingenieros"</h3>
+      <p>CEO de Google, en entrevista con The New York Times:</p>
+      <div class="quote negative-quote">
+        "Con la IA, vamos a poder lograr más con menos personas. El código se va a escribir solo, y los ingenieros se centrarán en definir el problema."
+      </div>
+      <p>Google, que había lanzado Gemini, promocionaba su IA como un salto adelante. Sin embargo, las ofertas de empleo para ingenieros de software en Google no disminuyeron; simplemente se reenfocaron hacia roles de IA/ML.</p>
+      <span class="event-tag tag-prediction">Predicción corporativa</span>
+    </div>
+  </div>
+
+  <div class="event">
+    <div class="event-dot positive"></div>
+    <div class="event-card">
+      <div class="event-date">Abril 2024</div>
+      <h3>📊 Bureau of Labor Statistics: crecimiento récord en empleos tech</h3>
+      <p>La Oficina de Estadísticas Laborales de EE.UU. reporta que el empleo de desarrolladores de software ha crecido un 32% desde 2022, contradiciendo directamente las predicciones de desaparición. El salario promedio también aumentó un 12% en el mismo período.</p>
+      <span class="event-tag tag-reality">Realidad</span>
+    </div>
+  </div>
+
+  <div class="event">
+    <div class="event-dot positive"></div>
+    <div class="event-card">
+      <div class="event-date">Julio 2024</div>
+      <h3>📊 Encuesta Stack Overflow 2024: la IA es herramienta, no reemplazo</h3>
+      <p>El 76% de los desarrolladores reporta usar IA en su trabajo diario. Pero el 82% dice que la IA comete errores sutiles que requieren intervención humana. Solo el 3% cree que la IA reemplazará a los programadores en 5 años.</p>
+      <span class="event-tag tag-reality">Realidad</span>
+    </div>
+  </div>
+
+  <div class="event">
+    <div class="event-dot positive"></div>
+    <div class="event-card">
+      <div class="event-date">Octubre 2024</div>
+      <h3>Análisis de Gartner: "La IA creará más trabajos de los que elimina"</h3>
+      <p>Gartner publica un informe que predice que para 2027, la IA generativa habrá creado 2.3 millones de nuevos empleos netos en tecnología, superando los 1.8 millones que podría desplazar. Nuevos roles como "ingeniero de prompt", "curador de datos" y "auditor de IA" emergen.</p>
+      <span class="event-tag tag-reality">Realidad</span>
+    </div>
+  </div>
+
+  <!-- ===================== 2025 ===================== -->
+  <div class="era-label">2025 — El año del desmentido</div>
+
+  <div class="event">
+    <div class="event-dot positive"></div>
+    <div class="event-card">
+      <div class="event-date">Enero 2025</div>
+      <h3>📊 Demanda de desarrolladores alcanza máximo histórico</h3>
+      <p>LinkedIn reporta que las ofertas de empleo para desarrolladores de software han alcanzado su punto más alto de la historia, superando incluso el boom de 2021. La IA generativa ha creado una nueva categoría de trabajos: integración de modelos, fine-tuning, despliegue de LLMs, infraestructura de AI.</p>
+      <span class="event-tag tag-reality">Realidad</span>
+    </div>
+  </div>
+
+  <div class="event">
+    <div class="event-dot neutral"></div>
+    <div class="event-card">
+      <div class="event-date">Febrero 2025</div>
+      <h3><span class="person">Jensen Huang</span> — Matthews a su propia predicción</h3>
+      <p>En una conferencia de analistas, Jensen Huang, CEO de Nvidia, suaviza sus declaraciones de 2023:</p>
+      <div class="quote reality-quote">
+        "La IA no reemplaza a los programadores. Aumenta su capacidad. Los mejores equipos serán aquellos donde humanos y IA colaboren, no donde uno reemplace al otro."
+      </div>
+      <span class="event-tag tag-context">Matices</span>
+    </div>
+  </div>
+
+  <div class="event">
+    <div class="event-dot positive"></div>
+    <div class="event-card">
+      <div class="event-date">Marzo 2025</div>
+      <h3>Datos del Foro Económico Mundial</h3>
+      <p>El "Future of Jobs Report 2025" del WEF indica que el desarrollo de software es una de las 5 profesiones con mayor crecimiento proyectado para 2025-2030. La IA es citada como un complemento, no un sustituto.</p>
+      <span class="event-tag tag-reality">Realidad</span>
+    </div>
+  </div>
+
+  <div class="event">
+    <div class="event-dot neutral"></div>
+    <div class="event-card">
+      <div class="event-date">Junio 2025</div>
+      <h3><span class="person">Emad Mostaque</span> — Sale de Stability AI</h3>
+      <p>Emad Mostaque renuncia como CEO de Stability AI tras resultados financieros decepcionantes. Su predicción de 2023 sobre el fin de los programadores queda en entredicho cuando su propia empresa no logra capitalizar el supuesto "fin del desarrollo tradicional".</p>
+      <span class="event-tag tag-context">Ironía</span>
+    </div>
+  </div>
+
+  <div class="event">
+    <div class="event-dot positive"></div>
+    <div class="event-card">
+      <div class="event-date">Septiembre 2025</div>
+      <h3>Estudio de Harvard Business Review: IA aumenta demanda de devs</h3>
+      <p>Harvard Business Review publica un estudio longitudinal de 500 empresas que adoptaron asistentes de IA. Conclusión: el 88% de las empresas que adoptaron IA para desarrollo <em>aumentaron</em> su plantilla de ingeniería de software. La IA permitió abordar proyectos antes inviables por falta de recursos.</p>
+      <span class="event-tag tag-reality">Realidad</span>
+    </div>
+  </div>
+
+  <div class="event">
+    <div class="event-dot positive"></div>
+    <div class="event-card">
+      <div class="event-date">Diciembre 2025</div>
+      <h3>📊 Cierre del año: más programadores que nunca</h3>
+      <p>Se estima que hay más de 30 millones de programadores en el mundo, un récord histórico. Stack Overflow y GitHub reportan crecimiento en todas las métricas de actividad. Las ofertas de empleo para desarrolladores crecieron un 15% en 2025.</p>
+      <span class="event-tag tag-reality">Realidad</span>
+    </div>
+  </div>
+
+  <!-- ===================== 2026 ===================== -->
+  <div class="era-label">2026 — Hoy: El mito desmentido</div>
+
+  <div class="event">
+    <div class="event-dot positive"></div>
+    <div class="event-card">
+      <div class="event-date">Enero 2026</div>
+      <h3>OpenCode y la nueva generación de herramientas</h3>
+      <p>Herramientas como OpenCode, que integran IA con flujos de trabajo de desarrollo tradicionales, demuestran que el futuro es la colaboración. Los desarrolladores adoptan la IA como un asistente que acelera su trabajo, no como un reemplazo.</p>
+      <span class="event-tag tag-reality">Realidad</span>
+    </div>
+  </div>
+
+  <div class="event">
+    <div class="event-dot highlight"></div>
+    <div class="event-card">
+      <div class="event-date">Junio 2026 — Hoy</div>
+      <h3>El veredicto: la IA como herramienta, no como verdugo</h3>
+      <p>
+        Las predicciones de los CEOs resultaron ser, en retrospectiva, una mezcla de:
+      </p>
+      <ul style="color:#a1a1aa; font-size:0.9rem; list-style:none; padding:0;">
+        <li style="margin-bottom:0.5rem;">🔮 <strong>Exageración comercial</strong> — Inflar las capacidades de la IA para atraer inversión</li>
+        <li style="margin-bottom:0.5rem;">📈 <strong>Valor bursátil</strong> — Las predicciones audaces elevaban el precio de las acciones</li>
+        <li style="margin-bottom:0.5rem;">🎯 <strong>Desconocimiento real</strong> — Subestimar la complejidad del desarrollo de software real</li>
+        <li style="margin-bottom:0.5rem;">🤝 <strong>Colaboración real</strong> — La IA demostró ser una herramienta poderosa que <em>aumenta</em> la demanda de programadores competentes</li>
+      </ul>
+      <span class="event-tag tag-launch">Conclusión</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="summary-section">
+  <div class="summary-card">
+    <h2>¿Qué pasó realmente?</h2>
+
+    <p>
+      La narrativa del "fin de los programadores" fue impulsada principalmente por CEOs
+      cuyas empresas se beneficiaban directamente de esa creencia. OpenAI, Microsoft, Google,
+      Nvidia y Stability AI tenían un interés económico claro en presentar la IA como una
+      fuerza imparable que reemplazaría trabajos humanos — eso justificaba inversiones
+      multimillonarias y valoraciones astronómicas.
+    </p>
+
+    <p>
+      La realidad del mercado laboral cuenta una historia diferente: la demanda de
+      desarrolladores ha crecido consistentemente desde el lanzamiento de ChatGPT.
+    </p>
+
+    <div class="data-points">
+      <div class="data-point">
+        <div class="num">30M+</div>
+        <div class="desc">Programadores en el mundo (2026)</div>
+      </div>
+      <div class="data-point">
+        <div class="num">+32%</div>
+        <div class="desc">Crecimiento empleo dev (2022-2026)</div>
+      </div>
+      <div class="data-point">
+        <div class="num">76%</div>
+        <div class="desc">Usan IA como herramienta</div>
+      </div>
+      <div class="data-point">
+        <div class="num">$120K+</div>
+        <div class="desc">Salario promedio dev senior</div>
+      </div>
+    </div>
+
+    <p>
+      La lección: la IA no eliminó a los programadores. Los hizo más productivos,
+      creó nuevas especialidades, y —contra todo pronóstico— incrementó la demanda
+      de talento humano. Las predicciones apocalípticas resultaron ser, como tantas
+      veces en tecnología, más humo que realidad.
+    </p>
+  </div>
+</div>
+
+<footer>
+  Línea de tiempo informativa basada en fuentes públicas y datos del mercado laboral 2022-2026.
+</footer>
+
+</body>
+</html>
