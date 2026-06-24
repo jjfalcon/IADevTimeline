@@ -1,9 +1,11 @@
 # AGENTS.md
 
-This repository is empty. Nothing has been scaffolded yet.
+Static single-page timeline site (Spanish). No build system, framework, or dependencies.
 
-- No package manager, build system, language runtime, or framework has been chosen.
-- No config files, README, or source code exist.
-- No CI, lint, test, or formatting tooling is configured.
-
-Before making changes, confirm the intended tech stack and project type with the user.
+- **Entrypoint:** `index.html` — open directly in a browser. No server needed.
+- **GitHub:** `https://github.com/jjfalcon/IADevTimeline.git` (remote: `origin`, branch: `main`)
+- **Language:** Spanish (`lang="es"`), dark theme, no external JS dependencies.
+- **Content:** Timeline from Nov 2022 (ChatGPT launch) to Jun 2026, documenting tech CEO predictions that programmers would disappear and how reality contradicted them.
+- **Design spec:** `WEB_SPEC.md` (single-line requirement, already implemented).
+- No tests, CI, linters, formatters, package managers, or build steps.
+- To deploy: serve `index.html` via any static host (GitHub Pages, etc.).
